@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function (Request $request) {
-    return "Wellcome to the API!";
-});
+Route::get('/', [ApiController::class, 'index']);
+Route::get('/embeddings', [ApiController::class, 'embeddings']);
