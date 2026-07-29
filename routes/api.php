@@ -9,3 +9,4 @@ Route::get('/embeddings', [ApiController::class, 'embeddings']);
 Route::get('/current-session', [ApiController::class, 'current_session']);
 Route::get('/settings', [ApiController::class, 'settings']);
 Route::get('/sessions', [ApiController::class, 'sessions']);
+Route::get('/sessions/show/{token}', [ApiController::class, 'showSession']);

@@ -69,4 +69,21 @@ class ApiController extends Controller
         ]);
     }
 
+    public function showSession($token)
+    {
+        $session = AttendanceSession::with(['subject','attendances','attendances.student'])->where('session_token', $token)->firstOrFail();
+
+        if($session) {
+            return response()->json([
+                'session' => $session,
+                'status' => true,
+            ]);
+        }
+
+        return response()->json([
+            'session' => $session,
+            'status' => false,
+        ]);
+    }
+
 }

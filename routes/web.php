@@ -14,9 +14,9 @@ Route::get('/', [HomeController::class, 'welcome'])->name('home');
 
 // Sessions
 Route::get('/sessions', [HomeController::class, 'sessions'])->name('sessions.index');
+Route::get('/sessions/show/{token}', [HomeController::class, 'showSession'])->name('sessions.show');
 Route::get('/attendance-history', [HomeController::class, 'attendanceHistory'])->name('attendance-history');
 Route::post('/attendance/history/check', [HomeController::class, 'attendanceHistoryCheck'])->name('attendance-history.check');
-Route::get('/sessions/show/{token}', [HomeController::class, 'showSession'])->name('sessions.show');
 
 // Self Registration
 Route::get('student-register', [StudentRegistrationController::class, 'create'])->name('student-register');
