@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceSession;
+use App\Models\RegistrationSetting;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -49,6 +50,12 @@ class ApiController extends Controller
             'session' => $session,
             'status' => false,
         ]);
+    }
+
+    public function settings()
+    {
+        $settings = RegistrationSetting::first();
+        return response()->json($settings);
     }
 
 }

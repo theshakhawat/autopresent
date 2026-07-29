@@ -7,3 +7,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ApiController::class, 'index']);
 Route::get('/embeddings', [ApiController::class, 'embeddings']);
 Route::get('/current-session', [ApiController::class, 'current_session']);
+Route::get('/settings', [ApiController::class, 'settings']);
