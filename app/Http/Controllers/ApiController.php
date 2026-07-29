@@ -37,7 +37,10 @@ class ApiController extends Controller
     public function current_session()
     {
         $session = AttendanceSession::with('subject')->whereNotNull('started_at')->whereNull('ended_at')->latest()->limit(1)->first();
-        return response()->json($session);
+        return response()->json([
+            'session' => $session,
+            'status' => true,
+        ]);
     }
 
 }
