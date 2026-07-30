@@ -94,7 +94,7 @@ class StudentRegistrationController extends Controller
                 'phone'          => $request->input('phone') ?: null,
                 'photo'          => $photoPath,
                 'face_embedding' => $embeddingData,
-                'status'         => 'pending', // Default status as requested in JS alert ('Wait for account active!')
+                'status'         => 'active', // Default status as requested in JS alert ('Wait for account active!')
             ]);
 
             return response()->json([

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\AttendanceSession;
 use App\Models\RegistrationSetting;
 use App\Models\Student;
@@ -276,5 +277,83 @@ class ApiController extends Controller
         Storage::disk('public')->put($fileName, $data);
 
         return $fileName;
+    }
+
+    public function takeAttendance(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'session_id' => 'required',
+            'embedding' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $embeddingData = FaceMatcher::parse($request->input('embedding'));
+
+            if (count($embeddingData) < 64) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid face data. Please scan again.',
+                ], 422);
+            }
+
+            $threshold = 0.50;
+            try {
+                $setting = RegistrationSetting::first();
+
+                if ($setting && $setting->similarity_threshold !== null) {
+                    $threshold = (float) $setting->similarity_threshold;
+                }
+            } catch (\Exception $e) {
+                $threshold = 0.50;
+            }
+
+
+            $students = Student::where('status', 'active')
+                ->whereNotNull('face_embedding')
+                ->get();
+
+            $match = FaceMatcher::findBestMatch($embeddingData, $students);
+
+            if ($match['student'] && $match['score'] >= $threshold) {
+
+                Attendance::updateOrCreate(
+                    [
+                        'attendance_session_id' => $request->input('session_id'),
+                        'student_id'            => $match['student']->id,
+                    ],
+                    [
+                        'status'          => 'present',
+                        'attendance_time' => now(),
+                    ]
+                );
+
+                return response()->json([
+                    'success'    => true,
+                    'registered'  => true,
+                    'message'    => 'Attendance recorded for ' . $match['student']->name . ' (Roll ' . $match['student']->roll . ').',
+                    'similarity' => round($match['score'], 4),
+                ], 200);
+            }
+
+            return response()->json([
+                'success'    => false,
+                'registered'  => false,
+                'message'    => 'This face is not registered in the system.',
+            ], 409);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to take student attendance : ' . $th->getMessage(),
+            ], 500);
+        }
     }
 }

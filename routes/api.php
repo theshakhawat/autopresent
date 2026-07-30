@@ -11,4 +11,6 @@ Route::get('/sessions', [ApiController::class, 'sessions']);
 Route::get('/sessions/show/{token}', [ApiController::class, 'showSession']);
 
 Route::post('/register-student', [ApiController::class, 'store']);
+
 Route::get('/embeddings', [ApiController::class, 'embeddings']);
+Route::post('/take-attendance', [ApiController::class, 'takeAttendance']);
