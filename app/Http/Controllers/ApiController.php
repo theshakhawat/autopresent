@@ -152,7 +152,7 @@ class ApiController extends Controller
             $threshold = 0.50;
 
             try {
-                $setting = Setting::first();
+                $setting = RegistrationSetting::first();
 
                 if ($setting && $setting->similarity_threshold !== null) {
                     $threshold = (float) $setting->similarity_threshold;
