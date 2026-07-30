@@ -49,8 +49,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::resource('subjects', SubjectController::class);
     Route::resource('attendance-sessions', AttendanceSessionController::class)
         ->except('show');
-    Route::post(
-        'attendance-sessions/{attendanceSession}/start',
+    Route::post('attendance-sessions/{attendanceSession}/start',
         [AttendanceSessionController::class, 'start']
     )->name('attendance-sessions.start');
     Route::post(

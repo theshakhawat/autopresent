@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\AttendanceSession;
+use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AttendanceSessionController extends Controller
@@ -159,20 +162,39 @@ class AttendanceSessionController extends Controller
     public function close(AttendanceSession $attendanceSession)
     {
         if (!$attendanceSession->started_at) {
-
-            return back()
-                ->with('error', 'Session has not started yet.');
+            return back()->with('error', 'Session has not started yet.');
         }
 
+        DB::transaction(function () use ($attendanceSession) {
 
-        $attendanceSession->update([
-            'ended_at' => now(),
-            'status' => 'closed',
-        ]);
+            // যেসব student already attendance দিয়েছে
+            $presentStudentIds = Attendance::where(
+                'attendance_session_id',
+                $attendanceSession->id
+            )->pluck('student_id');
 
+            // যেসব student attendance দেয়নি
+            $absentStudents = Student::where('status', 'active')
+                ->whereNotIn('id', $presentStudentIds)
+                ->get();
 
-        return back()
-            ->with('success', 'Attendance session closed.');
+            foreach ($absentStudents as $student) {
+                Attendance::create([
+                    'attendance_session_id' => $attendanceSession->id,
+                    'student_id' => $student->id,
+                    'status' => 'absent',
+                    'attendance_time' => now(),
+                ]);
+            }
+
+            // Session Close
+            $attendanceSession->update([
+                'ended_at' => now(),
+                'status' => 'closed',
+            ]);
+        });
+
+        return back()->with('success', 'Attendance session closed successfully.');
     }
 
     public function export(AttendanceSession $attendanceSession)
