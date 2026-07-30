@@ -39,7 +39,7 @@ class ApiController extends Controller
                 'id'        => $student->id,
                 'name'      => $student->name,
                 'roll'      => $student->roll,
-                'photo_url' => $student->photo ? asset('storage/' . $student->photo) : null,
+                'photo_url' => $student->photo ? $student->photo_url : null,
                 'email'     => $student->email,
                 'phone'     => $student->phone,
                 'embedding' => $embedding,
