@@ -281,6 +281,8 @@ class ApiController extends Controller
 
     public function takeAttendance(Request $request)
     {
+        return $request->all();
+
         $validator = Validator::make($request->all(), [
             'session_id' => 'required',
             'embedding' => 'required',
