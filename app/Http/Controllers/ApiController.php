@@ -281,10 +281,8 @@ class ApiController extends Controller
 
     public function takeAttendance(Request $request)
     {
-        return $request->all();
-
         $validator = Validator::make($request->all(), [
-            'session_id' => 'required',
+            'current_session_id' => 'required',
             'embedding' => 'required',
         ]);
 
@@ -328,7 +326,7 @@ class ApiController extends Controller
 
                 Attendance::updateOrCreate(
                     [
-                        'attendance_session_id' => $request->input('session_id'),
+                        'attendance_session_id' => $request->input('current_session_id'),
                         'student_id'            => $match['student']->id,
                     ],
                     [

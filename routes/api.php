@@ -13,10 +13,4 @@ Route::get('/sessions/show/{token}', [ApiController::class, 'showSession']);
 Route::post('/register-student', [ApiController::class, 'store']);
 
 Route::get('/embeddings', [ApiController::class, 'embeddings']);
-// Route::post('/take-attendance', [ApiController::class, 'takeAttendance']);
-Route::post('/take-attendance', function (Request $request) {
-    return response()->json([
-        'ok' => true,
-        'data' => $request->all(),
-    ]);
-});
+Route::post('/take-attendance', [ApiController::class, 'takeAttendance']);
